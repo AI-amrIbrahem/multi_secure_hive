@@ -1,7 +1,8 @@
 name: multi_secure_hive
-description: "A new Flutter package project."
+description: A secure wrapper for Hive with multiple encrypted boxes.
 version: 0.0.1
-homepage:
+author: Amr Ibrahem
+homepage: https://github:com/AI-amrIbrahem/multi_secure_hive
 
 environment:
   sdk: ^3.8.0

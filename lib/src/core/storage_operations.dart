@@ -36,7 +36,7 @@ class StorageOperations<T extends HiveKeyInterface> {
     }
   }
 
-  Future<V?> getValue<V>(T key) async {
+  V? getValue<V>(T key)  {
     try {
       final box = Hive.box(_getBoxName(key));
       final value = box.get(key.name);
@@ -63,12 +63,12 @@ class StorageOperations<T extends HiveKeyInterface> {
     }
   }
 
-  Future<bool> hasValue(T key) async {
+  bool hasValue(T key)  {
     final box = Hive.box(_getBoxName(key));
     return box.containsKey(key.name);
   }
 
-  Future<String> exportBackup(List<T> keys) async {
+  String exportBackup(List<T> keys)  {
     final backup = <String, Map<dynamic, dynamic>>{};
     for (final key in keys) {
       final box = Hive.box(_getBoxName(key));

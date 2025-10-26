@@ -117,9 +117,9 @@ class HiveSecureHelper<T extends HiveKeyInterface> {
     await _storage.setValue(key, value);
   }
 
-  Future<V?> getValue<V>(T key) async {
+  V? getValue<V>(T key)  {
     _ensureInitialized();
-    return await _storage.getValue<V>(key);
+    return  _storage.getValue<V>(key);
   }
 
   Future<void> deleteValue(T key) async {
@@ -128,9 +128,9 @@ class HiveSecureHelper<T extends HiveKeyInterface> {
     await _storage.deleteValue(key);
   }
 
-  Future<bool> hasValue(T key) async {
+  bool hasValue(T key)  {
     _ensureInitialized();
-    return await _storage.hasValue(key);
+    return  _storage.hasValue(key);
   }
 
   Future<void> clearBox(T key) async {

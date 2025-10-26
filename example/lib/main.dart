@@ -337,8 +337,8 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> _testLoadData() async {
     try {
-      final theme = await storage.getValue<bool>(HiveKeys.theme);
-      final lang = await storage.getValue<String>(HiveKeys.lang);
+      final theme =  storage.getValue<bool>(HiveKeys.theme);
+      final lang =  storage.getValue<String>(HiveKeys.lang);
       final token = await storage.getSecureValue(HiveKeys.token);
 
       setState(() {

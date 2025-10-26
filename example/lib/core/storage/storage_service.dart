@@ -46,8 +46,8 @@ class SecureStorageService {
     await _storage.setValue(key, value);
   }
 
-  Future<T?> getValue<T>(HiveKeys key) async {
-    return await _storage.getValue<T>(key);
+  T? getValue<T>(HiveKeys key)  {
+    return  _storage.getValue<T>(key);
   }
 
   Future<void> setSecureValue(HiveKeys key, String value) async {
@@ -62,8 +62,8 @@ class SecureStorageService {
     await _storage.deleteValue(key);
   }
 
-  Future<bool> hasValue(HiveKeys key) async {
-    return await _storage.hasValue(key);
+  bool hasValue(HiveKeys key)  {
+    return  _storage.hasValue(key);
   }
 
   Future<void> clearBox(HiveKeys key) async {

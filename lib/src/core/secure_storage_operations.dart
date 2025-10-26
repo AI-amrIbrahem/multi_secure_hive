@@ -38,7 +38,7 @@ class SecureStorageOperations<T extends HiveKeyInterface> {
       final masterKey = keyManager.decodeKey(
         await keyManager.getOrCreateMasterKey(),
       );
-      final encryptedValue = await storageOps.getValue<String>(key);
+      final encryptedValue =  storageOps.getValue<String>(key);
       if (encryptedValue == null) return null;
       return await encryptor.decrypt(encryptedValue, masterKey);
     } catch (e) {

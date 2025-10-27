@@ -28,7 +28,9 @@ Add to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  multi_secure_hive: ^1.0.0
+  multi_secure_hive:
+    git:
+      url: https://github.com/AI-amrIbrahem/multi_secure_hive.git
 ```
 
 Then run:

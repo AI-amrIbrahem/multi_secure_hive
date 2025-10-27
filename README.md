@@ -59,28 +59,163 @@ enum AppKeys implements HiveKeyInterface {
 }
 ```
 
-### 2. Initialize the Helper
+### 2. Create Storage Service
 
 ```dart
 import 'package:multi_secure_hive/multi_secure_hive.dart';
+import 'models/hive_keys.dart';
 
-final secureStorage = HiveSecureHelper<AppKeys>();
+class SecureStorageService {
+  // Singleton Pattern
+  static final SecureStorageService _instance =
+  SecureStorageService._internal();
+  factory SecureStorageService() => _instance;
+  SecureStorageService._internal();
 
-// Initialize with safe error recovery
-await secureStorage.initSafe(
-  keys: AppKeys.values,
-  config: HiveSecureConfig.production(appName: 'MyApp'),
-  resetOnError: true, // Auto-recover from MAC errors
-  afterReset: () {
-    print('Storage was reset due to encryption error');
-    // Handle post-reset logic (e.g., re-login)
-  },
-);
+  final _storage = HiveSecureHelper<HiveKeys>();
+
+  // Getters
+  HiveSecureConfig get config => _storage.config;
+  List<HiveKeys> get keys => _storage.keys;
+
+  bool get isInitialized {
+    try {
+      _storage.config;
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  /// Initialize storage
+  Future<void> initialize({
+    HiveSecureConfig? config,
+    bool resetOnError = true,
+    Function()? afterReset,
+  }) async {
+    await _storage.initSafe(
+      keys: HiveKeys.values,
+      config: config ?? HiveSecureConfig.development(appName: 'MyApp'),
+      resetOnError: resetOnError,
+      afterReset: afterReset,
+    );
+  }
+
+  // Basic Operations
+  Future<void> setValue(HiveKeys key, dynamic value) async {
+    await _storage.setValue(key, value);
+  }
+
+  T? getValue<T>(HiveKeys key) {
+    return _storage.getValue<T>(key);
+  }
+
+  Future<void> deleteValue(HiveKeys key) async {
+    await _storage.deleteValue(key);
+  }
+
+  bool hasValue(HiveKeys key) {
+    return _storage.hasValue(key);
+  }
+
+  Future<void> clearBox(HiveKeys key) async {
+    await _storage.clearBox(key);
+  }
+
+  Future<void> clearAllBoxes() async {
+    await _storage.clearAllBoxes();
+  }
+
+  // Secure Operations (Double Encryption)
+  Future<void> setSecureValue(HiveKeys key, String value) async {
+    await _storage.setSecureValue(key, value);
+  }
+
+  Future<String?> getSecureValue(HiveKeys key) async {
+    return await _storage.getSecureValue(key);
+  }
+
+  // Key Management
+  Future<void> rotateMasterKey({
+    void Function()? onSuccess,
+    void Function(String error)? onError,
+  }) async {
+    await _storage.rotateMasterKey(
+      onSuccess: onSuccess,
+      onError: onError,
+    );
+  }
+
+  Future<DateTime?> getLastRotationDate() async {
+    return await _storage.getLastRotationDate();
+  }
+
+  Future<int?> getDaysUntilNextRotation() async {
+    return await _storage.getDaysUntilNextRotation();
+  }
+
+  Future<SecurityLevel> getSecurityLevel() async {
+    return await _storage.getSecurityLevel();
+  }
+
+  // Emergency Actions
+  Future<void> resetEverything() async {
+    await _storage.resetEverything();
+  }
+
+  Future<void> dispose() async {
+    await _storage.dispose();
+  }
+}
 ```
 
-### 3. Store and Retrieve Data
+### 3. Initialize in Main
 
 ```dart
+import 'package:flutter/material.dart';
+import 'package:multi_secure_hive/multi_secure_hive.dart';
+import 'core/storage/storage_service.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialize secure storage
+  await SecureStorageService().initialize(
+    config: HiveSecureConfig.production(appName: 'appkey'),
+    resetOnError: true,
+    afterReset: () {
+      print("Secure storage initialized/reset");
+      // Handle post-reset logic (e.g., force logout, clear user session)
+    },
+  );
+
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Multi Secure Hive Demo',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+        useMaterial3: true,
+      ),
+      home: const HomePage(),
+    );
+  }
+}
+```
+
+### 4. Store and Retrieve Data
+
+```dart
+
+// Then use anywhere in your app
+final secureStorage = SecureStorageService();
+
 // Store regular data
 await secureStorage.setValue(AppKeys.userProfile, {
   'name': 'John Doe',

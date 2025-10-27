@@ -72,11 +72,11 @@ class SecureStorageService {
   factory SecureStorageService() => _instance;
   SecureStorageService._internal();
 
-  final _storage = HiveSecureHelper<HiveKeys>();
+  final _storage = HiveSecureHelper<AppKeys>();
 
   // Getters
   HiveSecureConfig get config => _storage.config;
-  List<HiveKeys> get keys => _storage.keys;
+  List<AppKeys> get keys => _storage.keys;
 
   bool get isInitialized {
     try {
@@ -94,7 +94,7 @@ class SecureStorageService {
     Function()? afterReset,
   }) async {
     await _storage.initSafe(
-      keys: HiveKeys.values,
+      keys: AppKeys.values,
       config: config ?? HiveSecureConfig.development(appName: 'MyApp'),
       resetOnError: resetOnError,
       afterReset: afterReset,
@@ -102,23 +102,23 @@ class SecureStorageService {
   }
 
   // Basic Operations
-  Future<void> setValue(HiveKeys key, dynamic value) async {
+  Future<void> setValue(AppKeys key, dynamic value) async {
     await _storage.setValue(key, value);
   }
 
-  T? getValue<T>(HiveKeys key) {
+  T? getValue<T>(AppKeys key) {
     return _storage.getValue<T>(key);
   }
 
-  Future<void> deleteValue(HiveKeys key) async {
+  Future<void> deleteValue(AppKeys key) async {
     await _storage.deleteValue(key);
   }
 
-  bool hasValue(HiveKeys key) {
+  bool hasValue(AppKeys key) {
     return _storage.hasValue(key);
   }
 
-  Future<void> clearBox(HiveKeys key) async {
+  Future<void> clearBox(AppKeys key) async {
     await _storage.clearBox(key);
   }
 
@@ -127,11 +127,11 @@ class SecureStorageService {
   }
 
   // Secure Operations (Double Encryption)
-  Future<void> setSecureValue(HiveKeys key, String value) async {
+  Future<void> setSecureValue(AppKeys key, String value) async {
     await _storage.setSecureValue(key, value);
   }
 
-  Future<String?> getSecureValue(HiveKeys key) async {
+  Future<String?> getSecureValue(AppKeys key) async {
     return await _storage.getSecureValue(key);
   }
 
